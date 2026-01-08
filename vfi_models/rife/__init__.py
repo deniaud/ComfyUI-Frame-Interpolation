@@ -1,9 +1,10 @@
 import torch
 from torch.utils.data import DataLoader
 import pathlib
-from vfi_utils import load_file_from_github_release, preprocess_frames, postprocess_frames, generic_frame_loop, InterpolationStateList
+from vfi_utils import preprocess_frames, postprocess_frames, generic_frame_loop, InterpolationStateList
 import typing
 from comfy.model_management import get_torch_device
+import folder_paths
 import re
 from functools import cmp_to_key
 from packaging import version
@@ -87,7 +88,7 @@ class RIFE_VFI:
             To prevent memory overflow, it clears the CUDA cache after processing a specified number of frames.
         """
         from .rife_arch import IFNet
-        model_path = load_file_from_github_release(MODEL_TYPE, ckpt_name)
+        model_path = folder_paths.get_full_path_or_raise("rife", ckpt_name)
         arch_ver = CKPT_NAME_VER_DICT[ckpt_name]
         interpolation_model = IFNet(arch_ver=arch_ver)
         interpolation_model.load_state_dict(torch.load(model_path))
